@@ -1,0 +1,98 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pod-reader
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: namespace-and-pod-reader
+rules:
+- apiGroups: [""]
+  resources: ["namespaces", "pods"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: namespace-and-pod-reader-binding
+subjects:
+- kind: ServiceAccount
+  name: pod-reader
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: namespace-and-pod-reader
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+  name: vgpu-monitor-svc
+  labels:
+    app: vgpu-monitor-svc
+spec:
+  selector:
+    app: vgpu-monitor-daemonset
+  type: ClusterIP
+  ports:
+  - name: vgpu-monitor-svc-metrics
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+--- 
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: vgpu-monitor
+spec:
+  selector:
+    matchLabels:
+      app: vgpu-monitor-daemonset
+  template:
+    metadata:
+      labels:
+        app: vgpu-monitor-daemonset
+    spec:
+      serviceAccountName: pod-reader
+      containers:
+      - name: vgpu-monitor
+        image: vgpu_monitor:latest
+        command: [ "./vgpu_monitor" ]
+        volumeMounts:
+        - name: dockersocket
+          mountPath: /var/run/docker.sock
+        - name: dockerclient
+          mountPath: /usr/bin/docker
+        - name: hostproc
+          mountPath: /workspace/proc
+        - name: hostconf
+          mountPath: /workspace/gpu_allocation.txt
+        env:
+        - name: NVIDIA_VISIBLE_DEVICES
+          value: all
+        ports:
+        - containerPort: 8080
+          name: metrics
+          protocol: TCP
+      volumes:
+      - name: dockersocket
+        hostPath: 
+          path: /var/run/docker.sock
+          type: Socket
+      - name: dockerclient
+        hostPath: 
+          path: /usr/bin/docker
+          type: File
+      - name: hostproc
+        hostPath: 
+          path: /proc
+      - name: hostconf
+        hostPath: 
+          path: /path/to/gpu_allocation.txt
+      nodeSelector:
+        nvidia.com/gpu.deploy.device-plugin: "true"
