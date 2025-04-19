@@ -120,7 +120,7 @@ ldconfig
 
 ```bash
 # 1. 克隆仓库
-git clone [项目仓库地址]
+git clone https://github.com/vrtust/k8s-vgpu-monitor.git
 cd k8s-vgpu-monitor
 
 # 2. 运行构建脚本

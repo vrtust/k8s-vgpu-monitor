@@ -120,7 +120,7 @@ Now you can compile k8s-vgpu-monitor. The project provides a `build.sh` script t
 
 ```bash
 # 1. Clone the repository
-git clone [Your Project Repository URL]
+git clone https://github.com/vrtust/k8s-vgpu-monitor.git
 cd k8s-vgpu-monitor
 
 # 2. Run the build script
