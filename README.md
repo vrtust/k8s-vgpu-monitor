@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 [![C++ Standard](https://img.shields.io/badge/C++-11-blue.svg)]()
 
-**[简体中文](./README_zh.md)** | English
+[简体中文](./README_zh.md) | **English**
 
 A monitoring tool developed using C++ and NVML to accurately track the **vGPU memory usage** and **SM (Streaming Multiprocessor) utilization** for each Pod in a Kubernetes (K8s) environment, based on a configured **GPU virtualization ratio**. It exposes monitoring metrics via a Prometheus Exporter interface.
 

@@ -3,7 +3,7 @@
 [![许可证](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 [![C++ Standard](https://img.shields.io/badge/C++-11-blue.svg)]()
 
-**简体中文** | **[English](./README.md)**
+**简体中文** | [English](./README.md)
 
 一个使用 C++ 和 NVML 开发的监控工具，用于精确统计 Kubernetes (K8s) 环境中每个 Pod 基于 **GPU 虚拟化比例** 的 **vGPU 显存占用** 和 **SM (Streaming Multiprocessor) 利用率**，并通过 Prometheus Exporter 接口暴露监控指标。
 
